@@ -1,0 +1,214 @@
+version: '3.3'
+
+services:
+  postgres:
+    restart: always
+    build:
+      context: ./docker_init
+      dockerfile: postgres.Dockerfile
+    command: postgres -c "max_connections=500"
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data/'
+    environment:
+      - POSTGRES_PASSWORD=geohai
+      - POSTGRES_USER=geohai
+    networks:
+      geohai:
+        aliases:
+          - postgres.geohai.local
+
+  minio:
+    restart: always
+    container_name: 'minio'
+    image: 'bitnami/minio:latest'
+    ports:
+      - '8004:9000'
+      - '8005:9001'
+    volumes:
+      - 'miniodata:/data'
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+    networks:
+      geohai:
+        aliases:
+          - minio.geohai.local
+
+  redis:
+    restart: always
+    container_name: 'redis'
+    image: 'redis:3.2.0'
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redisdata:/data'
+    networks:
+      geohai:
+        aliases:
+          - redis.geohai.local
+
+  rabbitmq:
+    restart: always
+    container_name: 'rabbitmq'
+    image: 'rabbitmq:3-management'
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    networks:
+      geohai:
+        aliases:
+          - rabbitmq.geohai.local
+
+  gateway:
+    restart: always
+    image: geohai/gateway
+    environment:
+      - NODE_ENV=DEVELOPMENT
+    build:
+      context: .
+      args:
+        - NODE_ENV=DEVELOPMENT
+      dockerfile: ./apiGateway/Dockerfile
+    ports:
+      - "8001:3000"
+    depends_on:
+      - redis
+      - rabbitmq
+    links:
+      - redis
+      - rabbitmq
+    networks:
+      geohai:
+        aliases:
+          - gateway.geohai.local
+
+  hospital:
+    restart: always
+    image: geohai/hospital
+    environment:
+      - NODE_ENV=DEVELOPMENT
+    build:
+      context: .
+      args:
+        - NODE_ENV=DEVELOPMENT
+      dockerfile: ./services/hospital/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - minio
+    links:
+      - postgres
+      - redis
+      - rabbitmq
+      - minio
+    networks:
+      geohai:
+        aliases:
+          - hospital.geohai.local
+
+  disease:
+    restart: always
+    image: geohai/disease
+    environment:
+      - NODE_ENV=DEVELOPMENT
+    build:
+      context: .
+      args:
+        - NODE_ENV=DEVELOPMENT
+      dockerfile: ./services/disease/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    links:
+      - postgres
+      - redis
+      - rabbitmq
+    networks:
+      geohai:
+        aliases:
+          - disease.geohai.local
+
+  patient:
+    restart: always
+    image: geohai/patient
+    environment:
+      - NODE_ENV=DEVELOPMENT
+    build:
+      context: .
+      args:
+        - NODE_ENV=DEVELOPMENT
+      dockerfile: ./services/patient/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+      - minio
+    links:
+      - postgres
+      - redis
+      - rabbitmq
+      - minio
+    networks:
+      geohai:
+        aliases:
+          - patient.geohai.local
+
+  user:
+    restart: always
+    image: geohai/user
+    environment:
+      - NODE_ENV=DEVELOPMENT
+    build:
+      context: .
+      args:
+        - NODE_ENV=DEVELOPMENT
+      dockerfile: ./services/userManagement/Dockerfile
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    links:
+      - postgres
+      - redis
+      - rabbitmq
+    networks:
+      geohai:
+        aliases:
+          - userManagement.geohai.local
+
+  migration:
+    restart: always
+    image: geohai/migration
+    environment:
+      - NODE_ENV=DEVELOPMENT
+    build:
+      context: .
+      dockerfile: ./migration/Dockerfile
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+    depends_on:
+      - postgres
+      - rabbitmq
+    links:
+      - postgres
+      - rabbitmq
+    networks:
+      geohai:
+        aliases:
+          - migration.geohai.local
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:
+
+networks:
+  geohai:
+    driver: bridge
+#    name: geohai.local
