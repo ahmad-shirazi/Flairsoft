@@ -12,12 +12,12 @@ services:
     volumes:
       - 'pgdata:/var/lib/postgresql/data/'
     environment:
-      - POSTGRES_PASSWORD=geohai
-      - POSTGRES_USER=geohai
+      - POSTGRES_PASSWORD=flairsoft
+      - POSTGRES_USER=flairsoft
     networks:
       geohai:
         aliases:
-          - postgres.geohai.local
+          - postgres.flairsoft.local
 
   minio:
     restart: always
@@ -34,32 +34,7 @@ services:
     networks:
       geohai:
         aliases:
-          - minio.geohai.local
-
-  redis:
-    restart: always
-    container_name: 'redis'
-    image: 'redis:3.2.0'
-    ports:
-      - '6379:6379'
-    volumes:
-      - 'redisdata:/data'
-    networks:
-      geohai:
-        aliases:
-          - redis.geohai.local
-
-  rabbitmq:
-    restart: always
-    container_name: 'rabbitmq'
-    image: 'rabbitmq:3-management'
-    ports:
-      - '15672:15672'
-      - '5672:5672'
-    networks:
-      geohai:
-        aliases:
-          - rabbitmq.geohai.local
+          - minio.flairsoft.local
 
   gateway:
     restart: always
@@ -96,89 +71,15 @@ services:
       dockerfile: ./services/hospital/Dockerfile
     depends_on:
       - postgres
-      - redis
-      - rabbitmq
       - minio
     links:
       - postgres
-      - redis
-      - rabbitmq
       - minio
     networks:
       geohai:
         aliases:
           - hospital.geohai.local
 
-  disease:
-    restart: always
-    image: geohai/disease
-    environment:
-      - NODE_ENV=DEVELOPMENT
-    build:
-      context: .
-      args:
-        - NODE_ENV=DEVELOPMENT
-      dockerfile: ./services/disease/Dockerfile
-    depends_on:
-      - postgres
-      - redis
-      - rabbitmq
-    links:
-      - postgres
-      - redis
-      - rabbitmq
-    networks:
-      geohai:
-        aliases:
-          - disease.geohai.local
-
-  patient:
-    restart: always
-    image: geohai/patient
-    environment:
-      - NODE_ENV=DEVELOPMENT
-    build:
-      context: .
-      args:
-        - NODE_ENV=DEVELOPMENT
-      dockerfile: ./services/patient/Dockerfile
-    depends_on:
-      - postgres
-      - redis
-      - rabbitmq
-      - minio
-    links:
-      - postgres
-      - redis
-      - rabbitmq
-      - minio
-    networks:
-      geohai:
-        aliases:
-          - patient.geohai.local
-
-  user:
-    restart: always
-    image: geohai/user
-    environment:
-      - NODE_ENV=DEVELOPMENT
-    build:
-      context: .
-      args:
-        - NODE_ENV=DEVELOPMENT
-      dockerfile: ./services/userManagement/Dockerfile
-    depends_on:
-      - postgres
-      - redis
-      - rabbitmq
-    links:
-      - postgres
-      - redis
-      - rabbitmq
-    networks:
-      geohai:
-        aliases:
-          - userManagement.geohai.local
 
   migration:
     restart: always
@@ -199,16 +100,15 @@ services:
       - postgres
       - rabbitmq
     networks:
-      geohai:
+      flairsoft:
         aliases:
           - migration.geohai.local
 
 volumes:
   pgdata:
-  redisdata:
   miniodata:
 
 networks:
-  geohai:
+  flairsoft:
     driver: bridge
-#    name: geohai.local
+#    name: flairsoft.local
