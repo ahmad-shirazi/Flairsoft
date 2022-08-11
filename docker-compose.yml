@@ -38,71 +38,50 @@ services:
 
   gateway:
     restart: always
-    image: geohai/gateway
+    image: flairsoft/ai
     environment:
       - NODE_ENV=DEVELOPMENT
     build:
       context: .
       args:
         - NODE_ENV=DEVELOPMENT
-      dockerfile: ./apiGateway/Dockerfile
+      dockerfile: ./src/Dockerfile
     ports:
       - "8001:3000"
     depends_on:
-      - redis
+      - postgres
       - rabbitmq
     links:
-      - redis
+      -         postgres
       - rabbitmq
     networks:
       geohai:
         aliases:
-          - gateway.geohai.local
-
-  hospital:
-    restart: always
-    image: geohai/hospital
-    environment:
-      - NODE_ENV=DEVELOPMENT
-    build:
-      context: .
-      args:
-        - NODE_ENV=DEVELOPMENT
-      dockerfile: ./services/hospital/Dockerfile
-    depends_on:
-      - postgres
-      - minio
-    links:
-      - postgres
-      - minio
-    networks:
-      geohai:
-        aliases:
-          - hospital.geohai.local
+          - ai.flairsoft.local
 
 
-  migration:
-    restart: always
-    image: geohai/migration
-    environment:
-      - NODE_ENV=DEVELOPMENT
-    build:
-      context: .
-      dockerfile: ./migration/Dockerfile
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 10
-    depends_on:
-      - postgres
-      - rabbitmq
-    links:
-      - postgres
-      - rabbitmq
-    networks:
-      flairsoft:
-        aliases:
-          - migration.geohai.local
+#  migration:
+#    restart: always
+#    image: geohai/migration
+#    environment:
+#      - NODE_ENV=DEVELOPMENT
+#    build:
+#      context: .
+#      dockerfile: ./migration/Dockerfile
+#    deploy:
+#      restart_policy:
+#        condition: on-failure
+#        max_attempts: 10
+#    depends_on:
+#      - postgres
+#      - rabbitmq
+#    links:
+#      - postgres
+#      - rabbitmq
+#    networks:
+#      flairsoft:
+#        aliases:
+#          - migration.geohai.local
 
 volumes:
   pgdata:

@@ -62,3 +62,6 @@ pip install nox
 export GOOGLE_APPLICATION_CREDENTIALS= /Users/ahmadshirazi/Desktop/FlairSoft/sapient-climate-350213-0e3096f201a7.json
 
 export GOOGLE_APPLICATION_CREDENTIALS=/Users/ahmadshirazi/Desktop/FlairSoft/sapient-climate-350213-3fb7c260e157.json
+
+
+if you add a python lib need to use pip3 freeze > requirements.txt
