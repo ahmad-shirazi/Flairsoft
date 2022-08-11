@@ -36,7 +36,7 @@ services:
         aliases:
           - minio.flairsoft.local
 
-  gateway:
+  ai:
     restart: always
     image: flairsoft/ai
     environment:
@@ -50,10 +50,10 @@ services:
       - "8001:3000"
     depends_on:
       - postgres
-      - rabbitmq
+      - minio
     links:
-      -         postgres
-      - rabbitmq
+      - postgres
+      - minio
     networks:
       geohai:
         aliases:
