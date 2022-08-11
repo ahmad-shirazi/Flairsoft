@@ -27,3 +27,14 @@ for key in config.BUCKET_NAMES:
 #         minioClient.fput_object('maylogs', 'pumaserver_debug.log', '/tmp/pumaserver_debug.log')
 #     except ResponseError as err:
 #         print(err)
+
+
+class MinioUtil(object):
+    def __init__(self):
+        self.client = minioClient
+
+    def get_object(self, bucket_name, object_name):
+        pass
+
+    def delete_object(self, bucket_name, object_name):
+        pass
