@@ -64,4 +64,13 @@ export GOOGLE_APPLICATION_CREDENTIALS= /Users/ahmadshirazi/Desktop/FlairSoft/sap
 export GOOGLE_APPLICATION_CREDENTIALS=/Users/ahmadshirazi/Desktop/FlairSoft/sapient-climate-350213-3fb7c260e157.json
 
 
-if you add a python lib need to use pip3 freeze > requirements.txt
+if you add a python lib need to use \
+pip3 freeze > requirements.txt
+
+
+for adding migration in database:
+just a time 
+alembic init alembic
+
+for creating each table
+alembic revision -m "create document table"
