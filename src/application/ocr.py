@@ -4,7 +4,6 @@ from src.config.enum import STATUS, BUCKET_NAMES
 from src.util.name_setter import get_random_name
 
 
-# todo amin
 def get_ocr(file_name, bucket_name, destination_file_name, destination_bucket_name):
     source_url = get_gcs_url(bucket_name, file_name)
     destination_url = get_gcs_url(destination_bucket_name, destination_file_name)
