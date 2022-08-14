@@ -4,6 +4,7 @@ from src.config.enum import STATUS, BUCKET_NAMES
 from src.util.name_setter import get_random_name
 
 
+# todo
 def remove_noise(file_obj):
     return file_obj
 

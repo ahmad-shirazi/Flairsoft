@@ -2,10 +2,6 @@ from src.dataaccess import document as document_data_access, image as image_data
 from src.config.enum import STATUS
 
 
-def get_ocr(file_obj):
-    return file_obj
-
-
 class Finalizer(object):
     def __init__(self, name):
         self.name = name
