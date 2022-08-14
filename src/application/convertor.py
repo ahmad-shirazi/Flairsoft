@@ -18,7 +18,8 @@ class Convertor(object):
     def __init__(self, name):
         self.name = name
 
-    async def run(self):
+    @staticmethod
+    async def run():
         while True:
             next_files = await document_data_access.fetch_by_status(STATUS["UNPROCESSED"])
             if len(next_files) <= 0:
