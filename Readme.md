@@ -74,3 +74,8 @@ alembic init alembic
 
 for creating each table
 alembic revision -m "create document table"
+
+
+PDF to images
+Install poppler: conda install -c conda-forge poppler
+Install pdf2image: pip install pdf2image
