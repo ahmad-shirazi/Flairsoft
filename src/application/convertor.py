@@ -8,15 +8,10 @@ from pdf2image import convert_from_bytes
 # todo ahmad
 #  https://pypi.org/project/pdf2image/
 def convert_pdf_to_images(file_obj):
-
-    # Store Pdf with convert_from_bytes function
-    images = convert_from_bytes(open(file_obj, 'rb').read())
-    
-    for i in range(len(images)):
-    
-        # Save pages as images in the pdf
-        images[i].save('page'+ str(i) +'.png', 'PNG')
-    return images
+    pages = convert_from_bytes(open(file_obj, 'rb').read())    
+    for page in pages:
+        page.save("%s-page%d.png" % (file_obj,pages.index(page)), "PNG")
+    return
 
 
 def create_image_model(file_key, name, bucket_name, number, status):
