@@ -3,11 +3,20 @@ from src.dataaccess import document as document_data_access, image as image_data
 from src.config.enum import STATUS, BUCKET_NAMES
 from src.util.misc import Image
 from src.util.name_setter import get_random_name
-
+from pdf2image import convert_from_bytes
 
 # todo
+#  https://pypi.org/project/pdf2image/
 def convert_pdf_to_images(file_obj):
-    return []
+
+    # Store Pdf with convert_from_bytes function
+    images = convert_from_bytes(open(file_obj, 'rb').read())
+    
+    for i in range(len(images)):
+    
+        # Save pages as images in the pdf
+        images[i].save('page'+ str(i) +'.png', 'PNG')
+    return images
 
 
 def create_image_model(file_key, name, bucket_name, number, status):
