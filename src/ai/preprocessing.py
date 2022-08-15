@@ -24,5 +24,5 @@ def denoise(image):
     image_sharp = cv2.filter2D(src=data, ddepth=-1, kernel=kernel)
     # cv2.imshow(data)
     # cv2.imshow(255-image1)
-    dnimage = cv2.imwrite('dnimage.png', img)
+    dnimage = cv2.imwrite('dnimage.png', image_sharp)
     return dnimage
