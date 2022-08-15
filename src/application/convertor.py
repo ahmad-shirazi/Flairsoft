@@ -5,7 +5,7 @@ from src.util.misc import Image
 from src.util.name_setter import get_random_name
 from pdf2image import convert_from_bytes
 
-# todo
+# todo ahmad
 #  https://pypi.org/project/pdf2image/
 def convert_pdf_to_images(file_obj):
 
