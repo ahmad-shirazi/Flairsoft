@@ -26,5 +26,3 @@ def denoise(image):
     # cv2.imshow(255-image1)
     dnimage = cv2.imwrite('dnimage.png', img)
     return dnimage
-
-
