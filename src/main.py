@@ -87,25 +87,43 @@ class Server(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(message))
 
 
-async def run(server_class=HTTPServer, handler_class=Server, port=8008):
-    convertor_obj = Convertor("convertor")
-    noise_removal = NoiseRemoval("noise")
-    ocr = OCR("ocr")
-    finalizer = Finalizer("finalizer")
+# async def run(server_class=HTTPServer, handler_class=Server, port=8008):
+#     convertor_obj = Convertor("convertor")
+#     noise_removal = NoiseRemoval("noise")
+#     ocr = OCR("ocr")
+#     finalizer = Finalizer("finalizer")
+#
+#     await convertor_obj.run()
+#     await noise_removal.run()
+#     await ocr.run()
+#     await finalizer.run()
+#
+#     server_address = ('', port)
+#     httpd = server_class(server_address, handler_class)
+#
+#     print('Starting httpd on port %d...' % port)
+#     # httpd.serve_forever()
+#
+#
+# if __name__ == '__main__':
+#     event_loop = asyncio.get_event_loop()
+#     event_loop.run_until_complete(run())
+#     event_loop.run_forever()
 
-    await convertor_obj.run()
-    await noise_removal.run()
-    await ocr.run()
-    await finalizer.run()
 
-    server_address = ('', port)
-    httpd = server_class(server_address, handler_class)
+async def run():
+    while True:
+        convertor_obj = Convertor("convertor")
+        noise_removal = NoiseRemoval("noise")
+        ocr = OCR("ocr")
+        finalizer = Finalizer("finalizer")
 
-    print('Starting httpd on port %d...' % port)
-    # httpd.serve_forever()
+        await convertor_obj.run()
+        await noise_removal.run()
+        await ocr.run()
+        await finalizer.run()
 
 
 if __name__ == '__main__':
     event_loop = asyncio.get_event_loop()
     event_loop.run_until_complete(run())
-    event_loop.run_forever()
