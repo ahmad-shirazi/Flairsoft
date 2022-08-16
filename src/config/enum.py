@@ -13,9 +13,9 @@ TABLE_NAMES = {
 
 
 BUCKET_NAMES = {
-    "UNPROCESSED": "UNPROCESSED",
-    "CONVERTED": "CONVERTED",
-    "REMOVED_NOISE": "REMOVED_NOISE",
-    "OCR": "OCR",
-    "FINISHED": "FINISHED"
+    "UNPROCESSED": "unprocesse",
+    "CONVERTED": "converte",
+    "REMOVED_NOISE": "remove_noise",
+    "OCR": "ocre",
+    "FINISHED": "finishe"
 }

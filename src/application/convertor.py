@@ -11,8 +11,7 @@ def convert_pdf_to_images(file_obj):
     pages = convert_from_bytes(open(file_obj, 'rb').read())    
     for page in pages:
         page.save("%s-page%d.png" % (file_obj,pages.index(page)), "PNG")
-    return
-
+    return pages
 
 def create_image_model(file_key, name, bucket_name, number, status):
     image = Image(image_id=None, file_key=file_key, name=name, bucket_name=bucket_name, number=number, status=status)
