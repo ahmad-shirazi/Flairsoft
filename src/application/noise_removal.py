@@ -34,7 +34,3 @@ class NoiseRemoval(object):
 
             next_file.status = STATUS["REMOVED_NOISE"]
             _ = await document_data_access.insert_and_update(next_file, "update")
-
-
-noise_removal = NoiseRemoval("noise")
-noise_removal.run()

@@ -1,17 +1,20 @@
 from src.util.google_cloud import upload_file, get_file
 from src.dataaccess import document as document_data_access, image as image_data_access
 from src.config.enum import STATUS, BUCKET_NAMES
+from src.config.file import TEMP_FOLDER
 from src.util.misc import Image
 from src.util.name_setter import get_random_name
-from pdf2image import convert_from_bytes
+from pdf2image import convert_from_bytes, convert_from_path
+
 
 # todo ahmad
 #  https://pypi.org/project/pdf2image/
-def convert_pdf_to_images(file_obj):
-    pages = convert_from_bytes(open(file_obj, 'rb').read())    
+def convert_pdf_to_images(url, local_bucket_name):
+    pages = convert_from_path(url)
     for page in pages:
-        page.save("%s-page%d.png" % (file_obj,pages.index(page)), "PNG")
+        page.save("%spage_%d.png" % (local_bucket_name, pages.index(page)), "PNG")
     return pages
+
 
 def create_image_model(file_key, name, bucket_name, number, status):
     image = Image(image_id=None, file_key=file_key, name=name, bucket_name=bucket_name, number=number, status=status)
@@ -29,20 +32,21 @@ class Convertor(object):
             if len(next_files) <= 0:
                 continue
             next_file = next_files[0]
-            file_obj = get_file(name=next_file.originalName, bucket_name=next_file.originalBucketName)
-            images = convert_pdf_to_images(file_obj=file_obj)
+            base_url = TEMP_FOLDER + BUCKET_NAMES["CONVERTED"] + "/"
+            destination_url = base_url + next_file.originalName
+            _ = get_file(name=next_file.originalName,
+                         bucket_name=next_file.originalBucketName,
+                         destination_url=destination_url)
+            images = convert_pdf_to_images(url=destination_url, local_bucket_name=base_url)
             for i in range(len(images)):
                 name = get_random_name(15) + ".png"
                 bucket_name = BUCKET_NAMES["CONVERTED"]
                 image = create_image_model(file_key=next_file.fileKey, name=name, bucket_name=bucket_name,
                                            number=i, status=STATUS["CONVERTED"])
 
-                upload_file(name, bucket_name, images[i])
+                file_url = base_url + "page_{}.png".format(i)
+                upload_file(name, bucket_name, file_url)
                 _ = await image_data_access.insert_and_update(image, "insert")
 
             next_file.status = "CONVERTED"
             _ = await document_data_access.insert_and_update(next_file, "update")
-
-
-convertor_obj = Convertor("first")
-convertor_obj.run()

@@ -1,31 +1,33 @@
 from google.cloud import storage
 from google.cloud import vision
 import json
+import time
+import os
 import re
 
 from src.config import google_cloud as google_config
 
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = google_config.GOOGLE_APPLICATION_CREDENTIALS
 
-def upload_file(name, bucket_name, file_obj):
+
+def upload_file(name, bucket_name, filename):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(name)
 
-    blob.upload_from_file(file_obj)
+    blob.upload_from_filename(filename)
 
-    print(
-        f"File uploaded to {name}."
-    )
+    print(f"File uploaded to {name}.")
 
 
-def get_file(name, bucket_name):
+def get_file(name, bucket_name, destination_url):
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(name)
 
-    file_obj = None
-    blob.download_to_file(file_obj)
-
+    blob.download_to_filename(destination_url)
+    time.sleep(10)
+    file_obj = open(destination_url, "rb")
     return file_obj
 
 
@@ -73,15 +75,15 @@ def get_text(gcs_source_uri, gcs_destination_uri, mime_type=google_config.MIME_T
     # for blob in blob_list:
     #     print(blob.name)
 
-    # Process the first output file from GCS.
+    # Process the first output file.py from GCS.
     # Since we specified batch_size=2, the first response contains
-    # the first two pages of the input file.
+    # the first two pages of the input file.py.
     output = blob_list[0]
     # print(output)
     json_string = output.download_as_string()
     response = json.loads(json_string)
 
-    # The actual response for the first page of the input file.
+    # The actual response for the first page of the input file.py.
     first_page_response = response['responses'][0]
     annotation = first_page_response['fullTextAnnotation']
 

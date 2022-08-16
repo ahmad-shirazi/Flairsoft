@@ -23,7 +23,7 @@ def upgrade():
         sa.Column('fileKey', sa.String(255), nullable=False),
         sa.Column('originalName', sa.String(255), nullable=False),
         sa.Column('originalBucketName', sa.String(255), nullable=False),
-        sa.Column('result', sa.String(max), nullable=True),
+        sa.Column('result', sa.String(), nullable=True),
         sa.Column('status', sa.String(255), nullable=True),
         sa.Column('createdAt', sa.DateTime(timezone=True), nullable=False),
         sa.Column('updatedAt', sa.DateTime(timezone=True), nullable=True),

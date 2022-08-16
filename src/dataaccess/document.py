@@ -69,4 +69,3 @@ async def fetch_by_status(status):
 
     result = await _get_result(query)
     return result
-

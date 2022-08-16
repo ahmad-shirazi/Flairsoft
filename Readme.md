@@ -71,6 +71,7 @@ pip3 freeze > requirements.txt
 for adding migration in database:
 just a time 
 alembic init alembic
+alembic upgrade head
 
 for creating each table
 alembic revision -m "create document table"

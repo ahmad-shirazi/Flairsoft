@@ -23,7 +23,3 @@ class Finalizer(object):
             next_file.status = STATUS["FINISHED"]
             next_file.result = result
             _ = await document_data_access.insert_and_update(next_file, "update")
-
-
-finalizer = Finalizer("finalizer")
-finalizer.run()
