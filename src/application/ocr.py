@@ -16,22 +16,22 @@ class OCR(object):
 
     @staticmethod
     async def run():
-        while True:
-            next_files = await document_data_access.fetch_by_status(STATUS["REMOVED_NOISE"])
-            if len(next_files) <= 0:
-                continue
-            next_file = next_files[0]
-            images = await image_data_access.fetch_by_file_key(next_file.fileKey)
-            for image in images:
-                name = get_random_name(15) + ".json"
-                bucket_name = BUCKET_NAMES["OCR"]
-                image.ocrBucketName = bucket_name
-                image.ocrName = name
-                text = get_ocr(image.noiseRemovedName, image.noiseRemovedBucketName,
-                               image.ocrName, image.ocrBucketName)
-                image.result = text
-                image.status = STATUS["OCR"]
-                _ = await image_data_access.update(image)
+        next_files = await document_data_access.fetch_by_status(STATUS["REMOVED_NOISE"])
+        if len(next_files) <= 0:
+            return
+        next_file = next_files[0]
+        images = await image_data_access.fetch_by_file_key(next_file.fileKey)
+        for image in images:
+            name = get_random_name(15) + ".json"
+            bucket_name = BUCKET_NAMES["OCR"]
+            image.ocrBucketName = bucket_name
+            image.ocrName = name
+            text = get_ocr(image.noiseRemovedName, image.noiseRemovedBucketName,
+                           image.ocrName, image.ocrBucketName)
+            image.result = text
+            image.status = STATUS["OCR"]
+            image.result = image.result.replace('\'', ' ').replace('\"', ' ')
+            _ = await image_data_access.update(image)
 
-            next_file.status = STATUS["OCR"]
-            _ = await document_data_access.update(next_file)
+        next_file.status = STATUS["OCR"]
+        _ = await document_data_access.update(next_file)

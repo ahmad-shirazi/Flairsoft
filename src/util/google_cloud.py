@@ -35,7 +35,7 @@ def get_gcs_url(bucket_name, file_name):
     return google_config.GOOGLE_CLOUD_URL.format(bucket_name, file_name)
 
 
-def get_text(gcs_source_uri, gcs_destination_uri, mime_type=google_config.MIME_TYPES["image"], batch_size=1000):
+def get_text(gcs_source_uri, gcs_destination_uri, mime_type=google_config.MIME_TYPES["image"], batch_size=10):
     client = vision.ImageAnnotatorClient()
 
     feature = vision.Feature(type_=vision.Feature.Type.DOCUMENT_TEXT_DETECTION)

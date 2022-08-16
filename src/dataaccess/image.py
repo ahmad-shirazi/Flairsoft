@@ -42,7 +42,7 @@ async def fetch_by_file_key(file_key):
     query = '''SELECT  "id", "fileKey", "name", "bucketName", "number", "noiseRemovedName", "noiseRemovedBucketName",
     "ocrName", "ocrBucketName", "result", "status", "createdAt", "updatedAt"
     FROM "{model_name}"
-    WHERE "fileKey" = '{file_key} order by "number"'
+    WHERE "fileKey" = '{file_key}' ORDER BY "number"
     '''.format(file_key=file_key, model_name=model_name)
 
     result = await _get_result(query)
