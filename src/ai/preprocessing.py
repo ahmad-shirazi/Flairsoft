@@ -3,7 +3,7 @@ import cv2
 
 
 def denoise(image_url):
-    imga = cv2.imread(image, 0)
+    imga = cv2.imread(image_url, 0)
 
     img = 255 - np.uint8(imga)
     kernel = np.ones((3, 3), np.uint8)
@@ -23,3 +23,4 @@ def denoise(image_url):
     # cv2.imshow(255-image1)
     dnimage = cv2.imwrite('dnimage.png', image_sharp)
     return dnimage
+denoise('/Users/ahmadshirazi/Desktop/img.png')
