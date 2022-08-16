@@ -31,7 +31,7 @@ class OCR(object):
                                image.ocrName, image.ocrBucketName)
                 image.result = text
                 image.status = STATUS["OCR"]
-                _ = await image_data_access.insert_and_update(image, "update")
+                _ = await image_data_access.update(image)
 
             next_file.status = STATUS["OCR"]
-            _ = await document_data_access.insert_and_update(next_file, "update")
+            _ = await document_data_access.update(next_file)

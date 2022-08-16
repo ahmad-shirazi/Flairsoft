@@ -1,4 +1,4 @@
-from src.util.db import executeval, fetch
+from src.util.db import executeval, fetch, execute
 from src.util.misc import Image
 from src.util.time import get_current_time
 from src.config.enum import TABLE_NAMES
@@ -14,12 +14,11 @@ async def _get_result(query):
             for row in result]
 
 
-async def insert_and_update(image_data, _type):
+async def insert(image_data):
     model_name = TABLE_NAMES['image']
-    if _type == "insert":
-        image_data.createdAt = get_current_time()
-    if _type == "update":
-        image_data.updatedAt = get_current_time()
+    image_data.createdAt = get_current_time()
+    # if _type == "update":
+    #     image_data.updatedAt = get_current_time()
 
     field_names = ['fileKey', 'name', 'bucketName', 'number', 'noiseRemovedName', 'noiseRemovedBucketName',
                    'ocrName', 'ocrBucketName', 'result', 'status', 'createdAt', 'updatedAt']
@@ -72,4 +71,28 @@ async def fetch_by_status(status):
 
     result = await _get_result(query)
     return result
+
+
+async def update(image_data):
+    model_name = TABLE_NAMES['image']
+    image_data.updatedAt = get_current_time()
+
+    query = '''
+        UPDATE "{model_name}"
+        SET "result" = '{result}', "status" = '{status}', "updatedAt" = '{updated_at}',
+         "noiseRemovedName" = '{noiseRemovedName}', "noiseRemovedBucketName" = '{noiseRemovedBucketName}',
+         "ocrName" = '{ocrName}', "ocrBucketName"='{ocrBucketName}'
+        WHERE "id" = '{_id}'
+        '''.format(
+        status=image_data.status,
+        ocrBucketName=image_data.ocrBucketName,
+        noiseRemovedName=image_data.noiseRemovedName,
+        noiseRemovedBucketName=image_data.noiseRemovedBucketName,
+        ocrName=image_data.ocrName,
+        result=image_data.result,
+        updated_at=image_data.updatedAt,
+        _id=image_data.id,
+        model_name=model_name
+    )
+    await execute(query)
 

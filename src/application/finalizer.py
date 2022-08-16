@@ -18,8 +18,8 @@ class Finalizer(object):
             for image in images:
                 result = result + " " + image.result
                 image.status = STATUS["FINISHED"]
-                _ = await image_data_access.insert_and_update(image, "update")
+                _ = await image_data_access.update(image)
 
             next_file.status = STATUS["FINISHED"]
             next_file.result = result
-            _ = await document_data_access.insert_and_update(next_file, "update")
+            _ = await document_data_access.update(next_file)

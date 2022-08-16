@@ -4,7 +4,7 @@ from src.config.enum import STATUS, BUCKET_NAMES
 from src.config.file import TEMP_FOLDER
 from src.util.misc import Image
 from src.util.name_setter import get_random_name
-from pdf2image import convert_from_bytes, convert_from_path
+from pdf2image import convert_from_path
 
 
 # todo ahmad
@@ -46,7 +46,7 @@ class Convertor(object):
 
                 file_url = base_url + "page_{}.png".format(i)
                 upload_file(name, bucket_name, file_url)
-                _ = await image_data_access.insert_and_update(image, "insert")
+                _ = await image_data_access.insert(image)
 
             next_file.status = "CONVERTED"
-            _ = await document_data_access.insert_and_update(next_file, "update")
+            _ = await document_data_access.update(next_file)

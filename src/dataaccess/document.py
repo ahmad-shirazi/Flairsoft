@@ -1,4 +1,4 @@
-from src.util.db import executeval, fetch
+from src.util.db import executeval, fetch, execute
 from src.util.misc import Document
 from src.util.time import get_current_time
 from src.config.enum import TABLE_NAMES
@@ -12,13 +12,9 @@ async def _get_result(query):
             for row in result]
 
 
-async def insert_and_update(document_data, _type):
+async def insert(document_data):
     model_name = TABLE_NAMES['document']
-    if _type == "insert":
-        document_data.createdAt = get_current_time()
-    if _type == "update":
-        document_data.updatedAt = get_current_time()
-
+    document_data.createdAt = get_current_time()
     field_names = ['fileKey', 'originalName', 'originalBucketName', 'result', 'status', 'createdAt', 'updatedAt']
     values_string = ','.join(['$' + str(idx + 1) for idx, _ in enumerate(field_names)])
     values = [getattr(document_data, field_name) for field_name in field_names]
@@ -69,3 +65,20 @@ async def fetch_by_status(status):
 
     result = await _get_result(query)
     return result
+
+
+async def update(document_data):
+    model_name = TABLE_NAMES['document']
+    document_data.updatedAt = get_current_time()
+    query = '''
+        UPDATE "{model_name}"
+        SET "result" = '{result}', "status" = '{status}', "updatedAt" = '{updated_at}'
+        WHERE "id" = '{id}'
+        '''.format(
+        status=document_data.status,
+        result=document_data.result,
+        updated_at=document_data.updatedAt,
+        id=document_data.id,
+        model_name=model_name
+    )
+    await execute(query)

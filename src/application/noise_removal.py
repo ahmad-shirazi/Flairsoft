@@ -1,12 +1,13 @@
 from src.util.google_cloud import upload_file, get_file
 from src.dataaccess import document as document_data_access, image as image_data_access
 from src.config.enum import STATUS, BUCKET_NAMES
+from src.config.file import TEMP_FOLDER
 from src.util.name_setter import get_random_name
 
 
 # todo ahmad
-def remove_noise(file_obj):
-    return file_obj
+def remove_noise(file_url):
+    return file_url
 
 
 class NoiseRemoval(object):
@@ -22,7 +23,9 @@ class NoiseRemoval(object):
             next_file = next_files[0]
             images = await image_data_access.fetch_by_file_key(next_file.fileKey)
             for image in images:
-                file_obj = get_file(name=image.name, bucket_name=image.bucketName)
+                base_url = TEMP_FOLDER + BUCKET_NAMES["CONVERTED"] + "/"
+                destination_url = base_url + image.name
+                file_obj = get_file(name=image.name, bucket_name=image.bucketName, destination_url=destination_url)
                 removed_noise_file_obj = remove_noise(file_obj)
                 name = get_random_name(15) + ".png"
                 bucket_name = BUCKET_NAMES["REMOVED_NOISE"]
@@ -30,7 +33,7 @@ class NoiseRemoval(object):
                 image.noiseRemovedName = name
                 image.status = STATUS["REMOVED_NOISE"]
                 upload_file(name, bucket_name, removed_noise_file_obj)
-                _ = await image_data_access.insert_and_update(image, "update")
+                _ = await image_data_access.update(image)
 
             next_file.status = STATUS["REMOVED_NOISE"]
-            _ = await document_data_access.insert_and_update(next_file, "update")
+            _ = await document_data_access.update(next_file)
