@@ -1,4 +1,8 @@
-from src.dataaccess.document import fetch_by_file_key
+from src.dataaccess.document import fetch_by_file_key, insert
+from src.config.enum import STATUS, BUCKET_NAMES
+from src.config.file import TEMP_FOLDER
+from src.util.google_cloud import upload_file
+from src.util.misc import Document
 
 import asyncio
 
@@ -39,5 +43,20 @@ def get_status(key):
     return res
 
 
-def post_data(key):
-    pass
+async def _post_data(file_key, filename, full_body):
+    print("amin")
+    url = TEMP_FOLDER + BUCKET_NAMES["UNPROCESSED"] + "/" + filename
+    with open(url, 'wb') as f:
+        f.write(full_body)
+    print("aaaa")
+    upload_file(name=filename, bucket_name=BUCKET_NAMES["UNPROCESSED"], filename=url)
+    doc = Document(file_key=file_key, original_name=filename, original_bucket_name=BUCKET_NAMES["UNPROCESSED"],
+                   status=STATUS["UNPROCESSED"], document_id=10)
+    res = await insert(doc)
+    return res
+
+
+def post_data(file_key, filename, full_body):
+    event_loop = asyncio.get_event_loop()
+    res = event_loop.run_until_complete(_post_data(file_key, filename, full_body))
+    return res
