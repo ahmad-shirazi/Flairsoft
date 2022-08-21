@@ -80,3 +80,6 @@ alembic revision -m "create document table"
 PDF to images
 Install poppler: conda install -c conda-forge poppler
 Install pdf2image: pip install pdf2image
+
+- "sudo docker-compose build --no-cache"
+- "docker-compose up -d"

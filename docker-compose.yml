@@ -15,77 +15,66 @@ services:
       - POSTGRES_PASSWORD=flairsoft
       - POSTGRES_USER=flairsoft
     networks:
-      geohai:
+      flairsoft:
         aliases:
           - postgres.flairsoft.local
 
-  minio:
+  gateway:
     restart: always
-    container_name: 'minio'
-    image: 'bitnami/minio:latest'
-    ports:
-      - '8004:9000'
-      - '8005:9001'
-    volumes:
-      - 'miniodata:/data'
-    environment:
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
-    networks:
-      geohai:
-        aliases:
-          - minio.flairsoft.local
-
-  ai:
-    restart: always
-    image: flairsoft/ai
-    environment:
-      - NODE_ENV=DEVELOPMENT
+    image: flairsoft/gateway
     build:
       context: .
-      args:
-        - NODE_ENV=DEVELOPMENT
-      dockerfile: ./src/Dockerfile
+      dockerfile: ./src/gateway.dockerFile
     ports:
-      - "8001:3000"
+      - "8001:3500"
     depends_on:
       - postgres
-      - minio
     links:
       - postgres
-      - minio
     networks:
-      geohai:
+      flairsoft:
+        aliases:
+          - ai.flairsoft.local
+
+  application:
+    restart: always
+    image: flairsoft/application
+    build:
+      context: .
+      dockerfile: ./src/dockerfile
+    ports:
+      - "8002:3000"
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    networks:
+      flairsoft:
         aliases:
           - ai.flairsoft.local
 
 
-#  migration:
-#    restart: always
-#    image: geohai/migration
-#    environment:
-#      - NODE_ENV=DEVELOPMENT
-#    build:
-#      context: .
-#      dockerfile: ./migration/Dockerfile
-#    deploy:
-#      restart_policy:
-#        condition: on-failure
-#        max_attempts: 10
-#    depends_on:
-#      - postgres
-#      - rabbitmq
-#    links:
-#      - postgres
-#      - rabbitmq
-#    networks:
-#      flairsoft:
-#        aliases:
-#          - migration.geohai.local
+  migration:
+    restart: always
+    image: flairsoft/migration
+    build:
+      context: .
+      dockerfile: ./migration/Dockerfile
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 10
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    networks:
+      flairsoft:
+        aliases:
+          - migration.flairsoft.local
 
 volumes:
   pgdata:
-  miniodata:
 
 networks:
   flairsoft:
