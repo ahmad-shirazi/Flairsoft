@@ -5,9 +5,10 @@ WORKDIR /src
 COPY src/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./migration/migrate.sh /Flairsoft/migrate.sh
-WORKDIR /Flairsoft
+COPY ./migration/migrate.sh /src/migrate.sh
+COPY ./src /src
+WORKDIR /src
 
 
-ENTRYPOINT ["/bin/bash", "/Flairsoft/migrate.sh"]
-CMD ["/Flairsoft/migrate.sh"]
+ENTRYPOINT ["/bin/bash", "/src/migrate.sh"]
+CMD ["/src/migrate.sh"]

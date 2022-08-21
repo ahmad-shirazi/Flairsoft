@@ -1,10 +1,22 @@
 FROM python:3.8-slim-buster
 
+#RUN apt-get update
+#RUN apt-get install -y build-essentials
+#RUN apt-get install wget
+#RUN apt-get clean
+#RUN rm -rf /var/lib/apt/lists/*
+#
+#ENV CONDA_DIR /opt/conda
+#RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh && \
+#     /bin/bash ~/miniconda.sh -b -p /opt/conda
+#
+#ENV PATH=$CONDA_DIR/bin:$PATH
+
 WORKDIR /src
 
-COPY src/requirements.txt requirements.txt
+COPY ./src /src
 RUN pip install --no-cache-dir -r requirements.txt
-RUN conda install -c conda-forge poppler
+#RUN conda install -c conda-forge poppler
 
 CMD ["python", "/src/main.py"]
 
