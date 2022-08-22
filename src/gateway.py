@@ -8,6 +8,10 @@ import cgi
 from urllib.parse import urlparse, parse_qs
 import json
 
+import os
+dir_path = os.path.dirname(os.path.realpath(__file__))
+print("pass {}".format(dir_path))
+
 
 class HandleRequests(BaseHTTPRequestHandler):
     def _set_headers(self):

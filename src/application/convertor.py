@@ -10,6 +10,7 @@ from pdf2image import convert_from_path
 # todo ahmad
 #  https://pypi.org/project/pdf2image/
 def convert_pdf_to_images(url, local_bucket_name):
+    print(url)
     pages = convert_from_path(url)
     for page in pages:
         page.save("%spage_%d.tiff" % (local_bucket_name, pages.index(page)), "TIFF")

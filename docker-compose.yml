@@ -7,7 +7,7 @@ services:
     image: flairsoft/application
     build:
       context: .
-      dockerfile: ./src/dockerFile
+      dockerfile: application.dockerFile
     ports:
       - "8002:3000"
     depends_on:
@@ -23,7 +23,7 @@ services:
     restart: always
     build:
       context: ./docker_init
-      dockerfile: postgres.Dockerfile
+      dockerfile: postgres.dockerfile
     command: postgres -c "max_connections=500"
     ports:
       - '5432:5432'
@@ -42,7 +42,7 @@ services:
     image: flairsoft/gateway
     build:
       context: .
-      dockerfile: ./src/gateway.dockerFile
+      dockerfile: gateway.dockerFile
     ports:
       - "8001:3500"
     depends_on:
@@ -59,7 +59,7 @@ services:
     image: flairsoft/migration
     build:
       context: .
-      dockerfile: ./migration/Dockerfile
+      dockerfile: migration/dockerfile
     deploy:
       restart_policy:
         condition: on-failure
