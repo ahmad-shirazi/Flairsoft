@@ -17,5 +17,5 @@ def denoise(image_url, output_url):
                        [-1, -1, -1]])
     image_sharp = cv2.filter2D(src=data, ddepth=-1, kernel=kernel)
 
-    cv2.imwrite(output_url, img)
+    cv2.imwrite(output_url, image_sharp)
     return output_url
