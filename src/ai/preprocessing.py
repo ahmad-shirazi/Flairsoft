@@ -8,8 +8,8 @@ def denoise(image_url, output_url):
     img = 255 - np.uint8(imga)
     kernel = np.ones((3, 3), np.uint8)
 
-    image1 = cv2.erode(img, kernel) 
-    image = cv2.erode(image1, kernel) 
+    # image1 = cv2.erode(img, kernel) 
+    image = cv2.erode(img, kernel) 
 
     data = 255 - np.uint8(image)
     kernel = np.array([[-1, -1, -1],
@@ -17,5 +17,5 @@ def denoise(image_url, output_url):
                        [-1, -1, -1]])
     image_sharp = cv2.filter2D(src=data, ddepth=-1, kernel=kernel)
 
-    cv2.imwrite(output_url, image_sharp)
+    cv2.imwrite(output_url, img)
     return output_url
