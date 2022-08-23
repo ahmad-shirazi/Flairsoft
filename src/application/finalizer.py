@@ -3,11 +3,7 @@ from src.dataaccess import document as document_data_access,\
     token as token_data_access
 from src.config.enum import STATUS
 from src.util.misc import Token
-
-
-# todo ahmad must to develop this part
-def get_key_values(text):
-    return {}
+from src.ai.tokenized import run as run_tokenized
 
 
 class Finalizer(object):
@@ -29,7 +25,7 @@ class Finalizer(object):
 
         next_file.status = STATUS["FINISHED"]
         next_file.result = result
-        key_value_list = get_key_values(result)
+        key_value_list = run_tokenized(result)
         for key, value in key_value_list.items():
             token = Token(token_id=0, file_key=next_file.fileKey, key=key, value=value)
             _ = await token_data_access.insert(token)
