@@ -16,6 +16,18 @@ class Document(object):
         self.updatedAt = updated_at
 
 
+class Token(object):
+    def __init__(self, token_id, file_key, key, value, created_at=None, updated_at=None):
+        self.id = token_id
+        self.fileKey = file_key
+
+        self.key = key
+        self.value = value
+
+        self.createdAt = created_at
+        self.updatedAt = updated_at
+
+
 class Image(object):
     def __init__(self, image_id, file_key, name, bucket_name, number,
                  noise_removed_name='', noise_removed_bucket_name='', ocr_name='', ocr_bucket_name='',

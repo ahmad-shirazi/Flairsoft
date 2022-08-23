@@ -8,7 +8,8 @@ STATUS = {
 
 TABLE_NAMES = {
     "image": "image",
-    "document": "document"
+    "document": "document",
+    "token": "token"
 }
 
 

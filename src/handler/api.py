@@ -1,4 +1,5 @@
-from src.dataaccess.document import fetch_by_file_key, insert
+from src.dataaccess.document import fetch_by_file_key as fetch_by_file_key_doc, insert as insert_doc
+from src.dataaccess.token import fetch_by_file_key as fetch_by_file_key_token
 from src.config.enum import STATUS, BUCKET_NAMES
 from src.config.file import TEMP_FOLDER
 from src.util.google_cloud import upload_file
@@ -8,15 +9,22 @@ import asyncio
 
 
 async def _search(keys):
-    result = dict()
-    docs = await fetch_by_file_key(keys[0])
-    result["req_status"] = "ok"
+    res = dict()
+    docs = await fetch_by_file_key_doc(keys[0])
+    res["req_status"] = "ok"
     if len(docs) <= 0:
-        result["req_status"] = "bad_req"
+        res["req_status"] = "bad_req"
     else:
         doc = docs[0]
-        result["result"] = doc.result
-    return result
+        result = dict()
+        tokens = await fetch_by_file_key_token(doc.fileKey)
+        for token in tokens:
+            result[token.key] = token.value
+        res["result"] = {
+            "text": doc.result,
+            "key_values": result
+        }
+    return res
 
 
 def search(key):
@@ -27,7 +35,7 @@ def search(key):
 
 async def _get_status(keys):
     result = dict()
-    docs = await fetch_by_file_key(keys[0])
+    docs = await fetch_by_file_key_doc(keys[0])
     result["req_status"] = "ok"
     if len(docs) <= 0:
         result["req_status"] = "bad_req"
@@ -52,7 +60,7 @@ async def _post_data(file_key, filename, full_body):
     upload_file(name=filename, bucket_name=BUCKET_NAMES["UNPROCESSED"], filename=url)
     doc = Document(file_key=file_key, original_name=filename, original_bucket_name=BUCKET_NAMES["UNPROCESSED"],
                    status=STATUS["UNPROCESSED"], document_id=10)
-    res = await insert(doc)
+    res = await insert_doc(doc)
     return res
 
 

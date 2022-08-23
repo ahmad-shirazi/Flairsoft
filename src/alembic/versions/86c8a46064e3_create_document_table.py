@@ -30,7 +30,7 @@ def upgrade():
     )
     op.create_index("idx_document_fileKey", "document", ["fileKey"], unique=True)
     op.create_index("idx_document_originalBucketName_originalName", "document", ["originalName", "originalBucketName"],
-                    unique=True)
+                    unique=False)
 
 
 def downgrade():
