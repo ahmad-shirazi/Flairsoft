@@ -1,5 +1,4 @@
 import glob
-import pandas as pd
 
 import us
 import nltk
@@ -179,8 +178,6 @@ def fun_digit(val):
 
 
 def run(text):
-    data = []
-    tknn = []
     data_case = fun_clean(text)
     df = fun_token(data_case, 75)
     df = fun_money(df, text, 75)
